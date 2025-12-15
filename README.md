@@ -2,8 +2,13 @@
 
 ![CI](https://github.com/fracabu/kie-ai-app/actions/workflows/ci.yml/badge.svg)
 
-
 Generate promotional videos using OpenRouter (AI storyboard) + Kie.ai Sora 2 (video generation).
+
+## Overview
+
+![AI Video Generator Overview](assets/ai-video-generator-overview.png)
+
+> 🎬 **[Video Demo](#)** - Coming soon
 
 ## Features
 
