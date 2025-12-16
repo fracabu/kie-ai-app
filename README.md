@@ -1,105 +1,84 @@
-<h1 align="center">KIE AI App</h1>
-<h3 align="center">AI Video Generation Pipeline</h3>
+# AI Video Generator
 
-<p align="center">
-  <em>Automate promotional video creation with AI storyboards</em>
-</p>
+\![CI](https://github.com/fracabu/kie-ai-app/actions/workflows/ci.yml/badge.svg)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/Sora_2-FF0000?style=flat-square" alt="Sora 2" />
-  <img src="https://img.shields.io/badge/AI-412991?style=flat-square" alt="AI" />
-  <img src="https://img.shields.io/badge/Video-4CAF50?style=flat-square" alt="Video" />
-</p>
+Generate promotional videos using OpenRouter (AI storyboard) + Kie.ai Sora 2 (video generation).
 
-<p align="center">
-  :gb: <a href="#english">English</a> | :it: <a href="#italiano">Italiano</a>
-</p>
+## 📺 Demo & Media
 
----
+\![Kie AI Infographic](assets/kie-ai-infographic.png)
 
-<a name="english"></a>
-## :gb: English
+> 🎬 **Video Demo**: Coming soon  
+> 🎙️ **Podcast**: Coming soon
 
-### Overview
+## Features
 
-Automates the entire process of generating promotional videos. From AI-powered storyboard creation to video generation with Kie.ai Sora 2 and final merging.
+- **Automated Storyboard Generation**: Uses Claude AI via OpenRouter to create cinematic scene prompts from a business description
+- **AI Video Generation**: Sends prompts to Kie.ai Sora 2 for text-to-video and image-to-video generation
+- **Multiple Workflows**: Full pipeline, single videos, presenter/avatar videos
+- **Video Merging**: FFmpeg integration to combine clips into final video
 
-### Features
+## Quick Start
 
-- **AI Storyboards** - Automatic storyboard generation
-- **Sora 2 Integration** - Kie.ai video generation
-- **Video Merging** - Combine generated clips
-- **End-to-End Automation** - Full pipeline
-- **Promotional Focus** - Marketing video creation
+### 1. Install Dependencies
 
-### Pipeline
+### 2. Configure API Keys
 
-1. Storyboard Generation (AI)
-2. Scene-by-Scene Video Creation
-3. Audio Integration
-4. Final Video Merge
+Edit \ with your keys:
+Get API keys:
+- OpenRouter: https://openrouter.ai/keys
+- Kie.ai: https://kie.ai/api-key
 
-### Quick Start
+### 3. Run
 
-```bash
-git clone https://github.com/fracabu/kie-ai-app.git
-cd kie-ai-app
-pip install -r requirements.txt
+## Scripts
 
-# Configure API keys
-python main.py
-```
+| Script | Description |
+|--------|-------------|
+| \ | Full workflow: storyboard generation + video creation |
+| \ | Generate single 15s video with auto-download |
+| \ | Generate presenter/avatar videos |
+| \ | Download videos from Kie.ai URLs |
+| \ | Merge video clips using FFmpeg |
+| \ | Test Kie.ai API with webhook callback |
 
----
+## How It Works
 
-<a name="italiano"></a>
-## :it: Italiano
+## Kie.ai Models
 
-### Panoramica
+| Model | Description |
+|-------|-------------|
+| \ | Text prompt to 10s/15s video |
+| \ | Animate an image |
+| \ | Pro quality (720p/1080p) |
+| \ | Pro image animation |
+| \ | Remove watermarks |
 
-Automatizza l'intero processo di generazione video promozionali. Dalla creazione storyboard AI alla generazione video con Kie.ai Sora 2 e merge finale.
+## Pricing
 
-### Funzionalita
+| Service | Cost |
+|---------|------|
+| Sora 2 (10s) | \/usr/bin/bash.15 (30 credits) |
+| Sora 2 (15s) | \/usr/bin/bash.15 (30 credits) |
+| Sora 2 Pro Standard | \/usr/bin/bash.75-\.35 |
+| Sora 2 Pro HD | \.65-\.15 |
+| OpenRouter (Claude) | ~\/usr/bin/bash.01-0.05 per storyboard |
 
-- **Storyboard AI** - Generazione storyboard automatica
-- **Integrazione Sora 2** - Generazione video Kie.ai
-- **Merge Video** - Combina clip generati
-- **Automazione End-to-End** - Pipeline completa
-- **Focus Promozionale** - Creazione video marketing
+## Output
 
-### Pipeline
+Generated videos are saved to the \ directory:
+- \, \, ... - Individual clips
+- \ - Generated storyboard
+- \ - FFmpeg concat list
+- \ / \ - Merge scripts
 
-1. Generazione Storyboard (AI)
-2. Creazione Video Scena per Scena
-3. Integrazione Audio
-4. Merge Video Finale
+## Requirements
 
-### Avvio Rapido
-
-```bash
-git clone https://github.com/fracabu/kie-ai-app.git
-cd kie-ai-app
-pip install -r requirements.txt
-
-# Configura API key
-python main.py
-```
-
----
-
-## Tech Stack
-
-- Python, Kie.ai API, Sora 2
+- Python 3.10+
+- FFmpeg (for video merging)
+- OpenRouter API key
+- Kie.ai API key
 
 ## License
 
 MIT
-
----
-
-<p align="center">
-  <a href="https://github.com/fracabu">
-    <img src="https://img.shields.io/badge/Made_by-fracabu-8B5CF6?style=flat-square" alt="Made by fracabu" />
-  </a>
-</p>
