@@ -10,11 +10,10 @@ OUTPUT_DIR = Path("output")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 # URL dei video generati da Kie.ai
+# Inserisci qui gli URL dal callback o dalla console Kie.ai
 VIDEOS = {
-    "scene_01_apertura.mp4": "https://tempfile.aiquickdraw.com/f/390523ea47b5e5ac52f67e8aadf918a4/d1bfbaf9-f49f-4782-875a-b5f6bda2fa9d.mp4",
-    "scene_02_caos_calma.mp4": "https://tempfile.aiquickdraw.com/f/5b36b65e2d60e2c5887a70b88f68d922/05edef63-78ac-48d5-9064-0832b0337867.mp4",
-    # scene_03 - FALLITA, da rigenerare
-    "scene_04_chiusura.mp4": "https://tempfile.aiquickdraw.com/f/b41b867d3661e2b8ccc8970b992b6061/372c324d-4306-4347-ae79-ee5f2e2e9c84.mp4",
+    # "scene_01.mp4": "https://tempfile.aiquickdraw.com/...",
+    # "scene_02.mp4": "https://tempfile.aiquickdraw.com/...",
 }
 
 def download_video(url, filename):

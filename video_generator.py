@@ -190,38 +190,14 @@ def check_task_status(task_id: str) -> dict:
     Controlla lo stato di un task di generazione video.
 
     Returns:
-        Dict con status e video_url (se completato)
+        Dict con la risposta API Kie.ai
     """
     headers = {
         "Authorization": f"Bearer {KIE_API_KEY}",
         "Content-Type": "application/json"
     }
 
-    endpoints_to_try = [
-        ("POST", KIE_QUERY_TASK, {"taskId": task_id}),
-        ("POST", f"{KIE_BASE_URL}/getTask", {"taskId": task_id}),
-        ("GET", f"{KIE_QUERY_TASK}?taskId={task_id}", None),
-        ("GET", f"{KIE_BASE_URL}/task/{task_id}", None),
-        ("GET", f"{KIE_BASE_URL}/{task_id}", None),
-    ]
-
-    for method, url, body in endpoints_to_try:
-        try:
-            if method == "POST":
-                response = requests.post(url, headers=headers, json=body)
-            else:
-                response = requests.get(url, headers=headers)
-
-            if response.status_code == 200:
-                return response.json()
-        except:
-            continue
-
-    # If all fail, raise with last error
-    print(f"      Tutti gli endpoint falliti per task {task_id}")
-    print(f"      Ultimo tentativo: {response.status_code} - {response.text[:300]}")
-    response.raise_for_status()
-
+    response = requests.post(KIE_QUERY_TASK, headers=headers, json={"taskId": task_id})
     return response.json()
 
 
@@ -241,14 +217,20 @@ def wait_for_video(task_id: str, scene_num: int, max_wait: int = 600) -> str:
 
     while time.time() - start_time < max_wait:
         result = check_task_status(task_id)
-        status = result.get("status", "").lower()
 
-        if status == "completed" or status == "success":
-            video_url = result.get("video_url") or result.get("output", {}).get("video_url")
-            print(f"  Scena {scene_num}: Completata!")
-            return video_url
-        elif status == "failed" or status == "error":
-            error = result.get("error", "Unknown error")
+        # Parse Kie.ai response format: data.state
+        data = result.get("data", {})
+        state = data.get("state", "").lower()
+
+        if state == "success":
+            # Parse resultJson to get video URL
+            result_json = json.loads(data.get("resultJson", "{}"))
+            video_urls = result_json.get("resultUrls", [])
+            if video_urls:
+                print(f"  Scena {scene_num}: Completata!                    ")
+                return video_urls[0]
+        elif state == "fail":
+            error = data.get("failMsg", "Unknown error")
             raise Exception(f"Generazione fallita per scena {scene_num}: {error}")
 
         # Progress indicator
@@ -368,10 +350,10 @@ echo "Video finale creato: {output_name}"
 def main():
     """Main entry point."""
     print("""
-╔═══════════════════════════════════════════════════════════════╗
-║     VIDEO PROMOZIONALE GENERATOR                              ║
-║     OpenRouter + Sora 2 (Kie.ai)                              ║
-╚═══════════════════════════════════════════════════════════════╝
+================================================================
+     VIDEO PROMOZIONALE GENERATOR
+     OpenRouter + Sora 2 (Kie.ai)
+================================================================
     """)
 
     # Check API keys

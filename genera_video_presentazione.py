@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 KIE_API_KEY = os.getenv("KIE_API_KEY")
-WEBHOOK_URL = "https://webhook.site/20fe2216-0076-4bd4-a676-59e66ae90134"
+# Get your webhook URL from https://webhook.site (free, for testing)
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://webhook.site/YOUR-UUID-HERE")
 
 def create_video_task(prompt, model="sora-2-text-to-video", duration="10", image_url=None):
     """Crea un task di generazione video."""

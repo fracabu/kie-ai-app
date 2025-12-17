@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AI Video Generator - Creates promotional videos using OpenRouter (storyboard generation) and Kie.ai Sora 2 (video generation). Videos are output to the `output/` directory.
 
+## Requirements
+
+- Python 3.10+
+- FFmpeg (for video merging only)
+- API keys: OpenRouter + Kie.ai
+
 ## Commands
 
 ```bash
@@ -13,6 +19,7 @@ pip install -r requirements.txt          # Install dependencies
 cp .env.example .env                      # Setup environment (edit with your keys)
 
 python video_generator.py                 # Full workflow: storyboard + video generation
+python genera_da_storyboard.py            # Generate videos from existing storyboard JSON
 python genera_video_presentazione.py      # Generate presenter/avatar videos (text or image-to-video)
 python genera_loop_video.py               # Generate single 15s loop video with polling
 python download_videos.py                 # Download videos from URLs (edit VIDEOS dict)
@@ -27,8 +34,11 @@ python test_callback.py                   # Test Kie.ai callback with webhook.si
 | Script | Purpose | Kie.ai Method |
 |--------|---------|---------------|
 | `video_generator.py` | Full storyboard-to-video pipeline | Polling |
+| `genera_da_storyboard.py` | Generate videos from saved storyboard | Polling |
 | `genera_loop_video.py` | Single video with auto-download | Polling |
-| `genera_video_presentazione.py` | Avatar/presenter videos | Callback (webhook.site) |
+| `genera_video_presentazione.py` | Avatar/presenter videos | Callback |
+| `download_videos.py` | Manual download from URLs | N/A |
+| `merge_videos.py` | Merge clips via FFmpeg | N/A |
 | `test_callback.py` | API connectivity test | Callback |
 
 **Main workflow (`video_generator.py`):**
@@ -43,9 +53,10 @@ python test_callback.py                   # Test Kie.ai callback with webhook.si
   - Base URL: `https://api.kie.ai/api/v1/jobs`
   - Create: `POST /createTask` → returns `taskId`
   - Query: `POST /queryTask` with `{"taskId": "..."}`
-  - Supports `callBackUrl` for webhook notifications instead of polling
+  - **Polling**: Loop on queryTask until `state` is `success` or `fail` (2-5 min typical)
+  - **Callback**: Add `callBackUrl` to createTask; Kie.ai POSTs result when done (use webhook.site for testing)
 
-**Models:** `sora-2-text-to-video`, `sora-2-image-to-video`, `sora-2-pro-*`, `sora-watermark-remover`
+**Kie.ai models:** `sora-2-text-to-video`, `sora-2-image-to-video`, `sora-2-pro-text-to-video`, `sora-2-pro-image-to-video`, `sora-watermark-remover`
 
 ## Configuration
 
@@ -61,21 +72,23 @@ SITE_URL=https://your-site.com
 SITE_NAME=YourAppName
 ```
 
-## Cost Reference
+## Costs
 
-- Sora 2: $0.15/10s video (30 credits)
-- Sora 2 Pro: $0.75-$3.15/video (varies by duration/resolution)
-- OpenRouter (Claude Sonnet): ~$0.01-0.05 per storyboard
+| Service | Cost |
+|---------|------|
+| Sora 2 (10s/15s) | $0.15 (30 credits) |
+| Sora 2 Pro | $0.75-$3.15 (varies by duration/resolution) |
+| OpenRouter (Claude Sonnet) | ~$0.01-0.05 per storyboard |
 
 ## Kie.ai API Details
 
-See `kie.ai_sora-2_API_reference.md` for full API documentation.
+See `docs/kie_api_reference.md` for full API documentation.
 
 **Key request parameters:**
-- `n_frames`: `"10"` (10s) or `"15"` (15s) - must be string
+- `n_frames`: `"10"` (10s) or `"15"` (15s) - **must be string, not int**
 - `aspect_ratio`: `"portrait"` or `"landscape"`
 - `remove_watermark`: boolean
-- `image_urls`: array of URLs for image-to-video model
+- `image_urls`: array of URLs (required for image-to-video models)
 
 **Callback response parsing:**
 ```python

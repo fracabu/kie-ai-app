@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 KIE_API_KEY = os.getenv("KIE_API_KEY")
-WEBHOOK_URL = "https://webhook.site/20fe2216-0076-4bd4-a676-59e66ae90134"
+# Get a free webhook URL at https://webhook.site
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://webhook.site/YOUR-UUID-HERE")
 
 url = "https://api.kie.ai/api/v1/jobs/createTask"
 headers = {

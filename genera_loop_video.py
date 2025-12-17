@@ -15,7 +15,7 @@ KIE_API_KEY = os.getenv("KIE_API_KEY")
 OUTPUT_DIR = Path("output")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-PROMPT = """Slow motion cinematic shot of massive rusty chains shattering into particles, abandoned industrial temple with overgrown vines, warm magenta and orange light breaking through cracks, dust and debris floating in air, camera slowly pushing forward, painterly dreamlike atmosphere, dystopian ruins, soft ethereal lighting, 16:9 cinematic"""
+PROMPT = """Modern sleek photo booth cabin in a bright shopping mall atrium, a young professional woman steps inside and sits down, soft flash of light illuminates her face, her perfect ID photo appears on the digital screen outside, clean white and electric blue design, smooth camera tracking shot around the cabin, professional corporate commercial style, warm ambient lighting, 4K cinematic quality"""
 
 
 def create_video_task():

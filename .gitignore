@@ -5,6 +5,10 @@
 # Output
 output/
 *.mp4
+*.jpg
+
+# Claude Code
+.claude/
 
 # Python
 __pycache__/
