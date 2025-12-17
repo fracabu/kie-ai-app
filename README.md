@@ -6,9 +6,27 @@ Generate AI videos for just **$0.15 per clip** using Kie.ai Sora 2 API.
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
-![AI Video Generator](assets/ai-video-gen.png)
+## How It Works
 
-![Generation in Progress](assets/generation-progress.png)
+![Workflow Overview](assets/ai-video-generator-overview.png)
+
+## Usage Flow
+
+### 1. Enter your prompt
+
+![Step 1 - Prompt](assets/step1-prompt.png)
+
+### 2. Task created
+
+![Step 2 - Task Created](assets/step2-task-created.png)
+
+### 3. Check status on Kie.ai
+
+![Step 3 - Kie.ai Logs](assets/step3-kie-logs.png)
+
+### 4. Video ready!
+
+![Step 4 - Video Ready](assets/step4-video-ready.png)
 
 ## Features
 
@@ -49,6 +67,8 @@ streamlit run app.py
 ```
 
 Open http://localhost:8501 and start generating videos!
+
+Check your video status at: https://kie.ai/it/logs
 
 ### CLI Alternative
 
