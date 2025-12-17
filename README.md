@@ -5,7 +5,7 @@ Generate AI videos for just **$0.15 per clip** using Kie.ai Sora 2 API.
 ![Streamlit UI](https://img.shields.io/badge/UI-Streamlit-FF4B4B?style=flat&logo=streamlit)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
-<img width="999" alt="Screenshot" src="https://github.com/user-attachments/assets/93fd94ec-14ee-46e5-9c02-c5123de127de" />
+
 
 ## Features
 
