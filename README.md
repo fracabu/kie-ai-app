@@ -48,6 +48,7 @@ python video_generator.py
 | `genera_video_presentazione.py` | Generate presenter/avatar videos |
 | `download_videos.py` | Download videos from Kie.ai URLs |
 | `merge_videos.py` | Merge video clips using FFmpeg |
+| `test_callback.py` | Test Kie.ai API with webhook callback |
 
 ---
 
@@ -55,7 +56,6 @@ python video_generator.py
 
 - Extended documentation with video examples
 - Multi-language support for storyboards
-| `test_callback.py` | Test Kie.ai API with webhook callback |
 
 ## How It Works
 
