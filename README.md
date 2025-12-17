@@ -8,6 +8,8 @@ Generate AI videos for just **$0.15 per clip** using Kie.ai Sora 2 API.
 <img width="999" height="579" alt="image" src="https://github.com/user-attachments/assets/93fd94ec-14ee-46e5-9c02-c5123de127de" />
 
 
+![Screenshot](assets/screenshot.png)
+
 ## Features
 
 - **Web UI** - Simple Streamlit dashboard for video generation
