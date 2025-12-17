@@ -10,6 +10,9 @@ output/
 # Claude Code
 .claude/
 
+# Articles (local drafts)
+article_*.md
+
 # Python
 __pycache__/
 *.py[cod]

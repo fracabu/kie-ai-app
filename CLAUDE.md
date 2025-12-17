@@ -18,6 +18,7 @@ AI Video Generator - Creates promotional videos using OpenRouter (storyboard gen
 pip install -r requirements.txt          # Install dependencies
 cp .env.example .env                      # Setup environment (edit with your keys)
 
+streamlit run app.py                      # Launch web UI
 python video_generator.py                 # Full workflow: storyboard + video generation
 python genera_da_storyboard.py            # Generate videos from existing storyboard JSON
 python genera_video_presentazione.py      # Generate presenter/avatar videos (text or image-to-video)
@@ -33,6 +34,7 @@ python test_callback.py                   # Test Kie.ai callback with webhook.si
 
 | Script | Purpose | Kie.ai Method |
 |--------|---------|---------------|
+| `app.py` | **Web UI** - Streamlit interface | Polling |
 | `video_generator.py` | Full storyboard-to-video pipeline | Polling |
 | `genera_da_storyboard.py` | Generate videos from saved storyboard | Polling |
 | `genera_loop_video.py` | Single video with auto-download | Polling |
