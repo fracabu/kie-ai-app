@@ -42,6 +42,13 @@ Get API keys:
 | \ | Merge video clips using FFmpeg |
 | \ | Test Kie.ai API with webhook callback |
 
+---
+
+## Coming Soon
+
+- Extended documentation with video examples
+- Multi-language support for storyboards
+
 ## How It Works
 
 ## Kie.ai Models
