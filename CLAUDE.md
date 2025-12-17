@@ -18,45 +18,46 @@ AI Video Generator - Creates promotional videos using OpenRouter (storyboard gen
 pip install -r requirements.txt          # Install dependencies
 cp .env.example .env                      # Setup environment (edit with your keys)
 
-streamlit run app.py                      # Launch web UI
+streamlit run app.py                      # Launch web UI (http://localhost:8501)
 python video_generator.py                 # Full workflow: storyboard + video generation
 python genera_da_storyboard.py            # Generate videos from existing storyboard JSON
-python genera_video_presentazione.py      # Generate presenter/avatar videos (text or image-to-video)
-python genera_loop_video.py               # Generate single 15s loop video with polling
+python genera_video_presentazione.py      # Generate presenter/avatar videos
+python genera_loop_video.py               # Generate single 15s loop video
 python download_videos.py                 # Download videos from URLs (edit VIDEOS dict)
 python merge_videos.py                    # Merge clips with FFmpeg
-python test_callback.py                   # Test Kie.ai callback with webhook.site
 ```
 
 ## Architecture
 
 **Scripts overview:**
 
-| Script | Purpose | Kie.ai Method |
-|--------|---------|---------------|
-| `app.py` | **Web UI** - Streamlit interface | Polling |
-| `video_generator.py` | Full storyboard-to-video pipeline | Polling |
+| Script | Purpose | Notes |
+|--------|---------|-------|
+| `app.py` | **Web UI** - Streamlit interface | Creates task, shows link to Kie.ai dashboard |
+| `video_generator.py` | Full storyboard-to-video pipeline | Polling (may timeout) |
 | `genera_da_storyboard.py` | Generate videos from saved storyboard | Polling |
 | `genera_loop_video.py` | Single video with auto-download | Polling |
 | `genera_video_presentazione.py` | Avatar/presenter videos | Callback |
 | `download_videos.py` | Manual download from URLs | N/A |
 | `merge_videos.py` | Merge clips via FFmpeg | N/A |
-| `test_callback.py` | API connectivity test | Callback |
 
-**Main workflow (`video_generator.py`):**
-1. `generate_storyboard()` - Calls OpenRouter to create scene prompts from business description
+**Web UI (`app.py`) workflow:**
+1. User enters prompt, selects duration and aspect ratio
+2. App creates task via Kie.ai API
+3. App shows task ID and link to Kie.ai dashboard
+4. User checks video status on https://kie.ai/it/logs
+
+**CLI workflow (`video_generator.py`):**
+1. `generate_storyboard()` - Calls OpenRouter to create scene prompts
 2. `create_video_task()` / `wait_for_video()` - Sends prompts to Kie.ai, polls for completion
 3. `download_video()` - Downloads completed videos to `output/`
-4. `create_ffmpeg_concat_script()` - Generates merge scripts (.bat and .sh)
+4. `create_ffmpeg_concat_script()` - Generates merge scripts
 
-**API patterns:**
-- OpenRouter: Standard chat completions endpoint, model `anthropic/claude-sonnet-4`
-- Kie.ai: Task-based async API - create task, poll/callback for results
-  - Base URL: `https://api.kie.ai/api/v1/jobs`
-  - Create: `POST /createTask` → returns `taskId`
-  - Query: `POST /queryTask` with `{"taskId": "..."}`
-  - **Polling**: Loop on queryTask until `state` is `success` or `fail` (2-5 min typical)
-  - **Callback**: Add `callBackUrl` to createTask; Kie.ai POSTs result when done (use webhook.site for testing)
+**Kie.ai API:**
+- Base URL: `https://api.kie.ai/api/v1/jobs`
+- Create task: `POST /createTask` returns `taskId`
+- Query status: Not reliably available - use dashboard or callback
+- Dashboard (logs): https://kie.ai/it/logs
 
 **Kie.ai models:** `sora-2-text-to-video`, `sora-2-image-to-video`, `sora-2-pro-text-to-video`, `sora-2-pro-image-to-video`, `sora-watermark-remover`
 
@@ -79,8 +80,10 @@ SITE_NAME=YourAppName
 | Service | Cost |
 |---------|------|
 | Sora 2 (10s/15s) | $0.15 (30 credits) |
-| Sora 2 Pro | $0.75-$3.15 (varies by duration/resolution) |
+| Sora 2 Pro | $0.75-$3.15 (varies) |
 | OpenRouter (Claude Sonnet) | ~$0.01-0.05 per storyboard |
+
+**Credits:** 1 credit = $0.005
 
 ## Kie.ai API Details
 
@@ -90,20 +93,14 @@ See `docs/kie_api_reference.md` for full API documentation.
 - `n_frames`: `"10"` (10s) or `"15"` (15s) - **must be string, not int**
 - `aspect_ratio`: `"portrait"` or `"landscape"`
 - `remove_watermark`: boolean
-- `image_urls`: array of URLs (required for image-to-video models)
-
-**Callback response parsing:**
-```python
-result_json = json.loads(callback_data["data"]["resultJson"])
-video_url = result_json["resultUrls"][0]
-```
-
-**Polling response parsing:**
-```python
-data = result.get("data", {})
-state = data.get("state")  # "success" or "fail"
-result_json = json.loads(data.get("resultJson", "{}"))
-video_urls = result_json.get("resultUrls", [])
-```
+- `image_urls`: array of URLs (for image-to-video models)
 
 **Response codes:** 200=success, 401=auth error, 402=insufficient credits, 429=rate limit
+
+## Output Files
+
+Generated files in `output/`:
+- `scene_01.mp4`, `scene_02.mp4`, ... - Individual video clips
+- `storyboard_YYYYMMDD_HHMMSS.json` - Generated storyboard
+- `filelist.txt` - FFmpeg concat input
+- `merge_videos.bat` / `merge_videos.sh` - Merge scripts

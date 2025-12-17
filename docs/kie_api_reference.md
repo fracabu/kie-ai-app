@@ -150,9 +150,13 @@ When `callBackUrl` is provided, the system sends POST requests to that URL upon 
 
 ## POST /api/v1/jobs/queryTask
 
-Query task status (endpoint to be confirmed).
+**WARNING: This endpoint returns 404 Not Found.** Use the Kie.ai dashboard or callbacks instead.
+
+- Dashboard (logs): https://kie.ai/it/logs
+- Callback: Add `callBackUrl` to createTask request
 
 ```bash
+# NOT WORKING - returns 404
 curl -X POST "https://api.kie.ai/api/v1/jobs/queryTask" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \

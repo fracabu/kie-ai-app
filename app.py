@@ -6,21 +6,15 @@ Genera video AI con Kie.ai Sora 2
 import streamlit as st
 import requests
 import os
-import time
-import json
-from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Config
 KIE_API_KEY = os.getenv("KIE_API_KEY")
-OUTPUT_DIR = Path("output")
-OUTPUT_DIR.mkdir(exist_ok=True)
 
-# Kie.ai API endpoints
+# Kie.ai API endpoint
 KIE_CREATE_TASK = "https://api.kie.ai/api/v1/jobs/createTask"
-KIE_QUERY_TASK = "https://api.kie.ai/api/v1/jobs/queryTask"
 
 
 def create_video_task(prompt: str, duration: str = "15", aspect_ratio: str = "landscape") -> str | None:
@@ -50,62 +44,6 @@ def create_video_task(prompt: str, duration: str = "15", aspect_ratio: str = "la
         return None
 
 
-def check_task_status(task_id: str) -> dict:
-    """Controlla lo stato del task."""
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {KIE_API_KEY}"
-    }
-
-    response = requests.post(KIE_QUERY_TASK, headers=headers, json={"taskId": task_id})
-    return response.json()
-
-
-def wait_for_video(task_id: str, progress_bar, status_text, max_wait: int = 600) -> str | None:
-    """Attende il completamento e restituisce l'URL del video."""
-    start_time = time.time()
-
-    while time.time() - start_time < max_wait:
-        result = check_task_status(task_id)
-        data = result.get("data", {})
-        state = data.get("state", "").lower()
-
-        elapsed = int(time.time() - start_time)
-        progress = min(elapsed / max_wait, 0.95)  # Max 95% durante attesa
-        progress_bar.progress(progress)
-        status_text.text(f"Generazione in corso... {elapsed}s")
-
-        if state == "success":
-            result_json = json.loads(data.get("resultJson", "{}"))
-            video_urls = result_json.get("resultUrls", [])
-            if video_urls:
-                progress_bar.progress(1.0)
-                return video_urls[0]
-
-        elif state == "fail":
-            error = data.get("failMsg", "Errore sconosciuto")
-            st.error(f"Generazione fallita: {error}")
-            return None
-
-        time.sleep(5)
-
-    st.error(f"Timeout dopo {max_wait}s")
-    return None
-
-
-def download_video(url: str, filename: str) -> Path:
-    """Scarica il video e lo salva localmente."""
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
-
-    filepath = OUTPUT_DIR / filename
-    with open(filepath, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
-
-    return filepath
-
-
 # ============ STREAMLIT UI ============
 
 st.set_page_config(
@@ -120,7 +58,7 @@ st.caption("Genera video con Kie.ai Sora 2")
 
 # Check API key
 if not KIE_API_KEY:
-    st.error("⚠️ KIE_API_KEY non configurata! Aggiungi la chiave nel file `.env`")
+    st.error("KIE_API_KEY non configurata! Aggiungi la chiave nel file `.env`")
     st.stop()
 
 # Sidebar info
@@ -177,34 +115,20 @@ if st.button("🚀 Genera Video", type="primary", use_container_width=True):
             task_id = create_video_task(prompt, duration, aspect_ratio)
 
         if task_id:
-            st.success(f"Task creato! ID: `{task_id[:20]}...`")
+            # Success - mostra task ID e link a dashboard
+            st.success("**Richiesta inviata con successo!**")
 
-            # Progress
-            progress_bar = st.progress(0)
-            status_text = st.empty()
+            st.info(f"""
+            📋 **Task ID:** `{task_id}`
 
-            # Wait for video
-            video_url = wait_for_video(task_id, progress_bar, status_text)
+            ⏱️ **Tempo stimato:** 2-5 minuti
 
-            if video_url:
-                status_text.text("Download video...")
+            💰 **Costo:** ~$0.15 (30 credits)
+            """)
 
-                # Download
-                filename = f"video_{int(time.time())}.mp4"
-                filepath = download_video(video_url, filename)
+            # Link diretto a Kie.ai dashboard
+            st.divider()
+            st.write("**Controlla lo stato del video su Kie.ai:**")
+            st.link_button("🔗 Apri Dashboard Kie.ai", "https://kie.ai/it/logs", use_container_width=True)
 
-                # Show result
-                st.subheader("3. Risultato")
-                st.success(f"Video generato! Salvato in `{filepath}`")
-
-                # Video player
-                st.video(str(filepath))
-
-                # Download button
-                with open(filepath, "rb") as f:
-                    st.download_button(
-                        label="📥 Scarica Video",
-                        data=f,
-                        file_name=filename,
-                        mime="video/mp4"
-                    )
+            st.caption("Il video apparira' nei 'Logs' quando sara' pronto.")
